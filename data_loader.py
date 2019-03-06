@@ -58,8 +58,10 @@ def get_data():
             data.append(row)
 
     data = np.array(data)
+    labels = np.array(labels)
     print("Finished parsing", rows_parsed, "rows from", WARFARIN_FILE_PATH)
-    print("Size of data:", len(data),)
+    print("Shape of data:", data.shape)
+    print("Shape of labels:", labels.shape)
     print("values_dict:", values_dict.keys())
     return data, labels, columns_dict, values_dict
 
