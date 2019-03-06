@@ -26,15 +26,14 @@ def get_data():
 
     labels = []
     label_index = -1
+    ignore_columns_past_index = float('inf')
     for i,r in enumerate(reader):
         if i == 0:
-          print("Columns are:", r)
-          print()
-          print("Total num of columns is (excluding ID):", len(r)-1)
-          print()
           for i,c in enumerate(r[1:]):
             if c == LABEL_COLUMN:
               label_index = i 
+            elif c == '':
+              ignore_columns_past_index = min(ignore_columns_past_index, i)
             else:
               columns_dict[c] = len(columns_dict)
         elif r[0] != '':  # check that subject ID is present
@@ -47,22 +46,24 @@ def get_data():
               if col_val == 'NA':  # toss out this sample
                 add_data = False
                 break
-              labels.append(float(col_val))
+              label = float(col_val)
               adjust = 1
-            else:
+            elif i < ignore_columns_past_index:
               if col_val not in values_dict[i - adjust]:
                 values_dict[i-adjust][col_val] = len(values_dict[i - adjust])
               row.append(values_dict[i - adjust][col_val])
 
           if add_data:
             data.append(row)
+            labels.append(label)
+
+    assert len(values_dict.keys()) == len(columns_dict.keys()), "length of values and columns dicts should match"
 
     data = np.array(data)
     labels = np.array(labels)
     print("Finished parsing", rows_parsed, "rows from", WARFARIN_FILE_PATH)
     print("Shape of data:", data.shape)
     print("Shape of labels:", labels.shape)
-    print("values_dict:", values_dict.keys())
     return data, labels, columns_dict, values_dict
 
 
