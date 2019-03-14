@@ -2,6 +2,7 @@ import numpy as np
 import data_loader as dl
 import util
 from baseline import Fixed_Dose
+from baseline import Warfarin_Clinical_Dose
 
 def test_dummy_baseline(alg):
     n = 3
@@ -33,3 +34,6 @@ if __name__ == '__main__':
     
     test_dummy_baseline(fixed)
     test_data_baseline(fixed, data, true_labels)
+
+    clinical = Warfarin_Clinical_Dose(columns_dict, values_dict)
+    test_data_baseline(clinical, data, true_labels)
