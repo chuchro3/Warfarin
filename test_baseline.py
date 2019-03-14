@@ -3,6 +3,7 @@ import data_loader as dl
 import util
 from baseline import Fixed_Dose
 from baseline import Warfarin_Clinical_Dose
+from lin_ucb import Lin_UCB
 
 def test_dummy_baseline(alg):
     n = 3
@@ -37,3 +38,6 @@ if __name__ == '__main__':
 
     clinical = Warfarin_Clinical_Dose(columns_dict, values_dict)
     test_data_baseline(clinical, data, true_labels)
+
+    lin_ucb = Lin_UCB(columns_dict, values_dict)
+    test_data_baseline(lin_ucb, data, true_labels)
