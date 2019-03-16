@@ -42,6 +42,5 @@ def get_data_linear():
                 linearized_data[i,write_index + int(val)] = 1
                 write_index += len(values_dict[index_labels[j]].items())
         assert write_index == NUM_COLS
-    return linearized_data
+    return linearized_data, labels
 
-data = get_data_linear()

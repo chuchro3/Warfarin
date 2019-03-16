@@ -92,8 +92,8 @@ def get_data():
     data = np.array(data)
     labels = np.array(labels)
     print("Finished parsing", rows_parsed, "rows from", WARFARIN_FILE_PATH)
-    print("Shape of data:", data.shape)
-    print("Shape of labels:", labels.shape)
+    # print("Shape of data:", data.shape)
+    # print("Shape of labels:", labels.shape)
 
     avg_height = np.mean(heights)
     avg_weight = np.mean(heights)
