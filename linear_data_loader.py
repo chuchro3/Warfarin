@@ -11,7 +11,8 @@ WARFARIN_FILE_PATH = './data/warfarin.csv'
 DATA_COLUMNS = 65
 LABEL_COLUMN = 'Therapeutic Dose of Warfarin'
 
-FLOAT_LABELS = ['Age', 'Height (cm)', 'Weight (kg)']
+FLOAT_LABELS = ['Age', 'Height (cm)', 'Weight (kg)', 'INR on Reported Therapeutic Dose of Warfarin']
+IGNORE_LABELS = ['Comorbidities', 'Medications']
 LABELS = []
 
 # returns:
@@ -28,19 +29,22 @@ def get_data_linear():
 
     # DANGEROUS: RAN ONCE TO FIGURE OUT SHAPE.
     NUM_ROWS = 5528
-    NUM_COLS = 4153
+    NUM_COLS = 297
     # do not change the above unless shape of data changes.
     linearized_data = np.zeros((NUM_ROWS, NUM_COLS))
     for i, d in enumerate(data):
         write_index = 0
         for j, val in enumerate(d):
-            if index_labels[j] in FLOAT_LABELS:
+            if index_labels[j] in IGNORE_LABELS:
+                continue
+            elif index_labels[j] in FLOAT_LABELS:
                 linearized_data[i,write_index] = val
                 write_index += 1
             else:
                 assert val == int(val), 'Value must be a value index'
                 linearized_data[i,write_index + int(val)] = 1
                 write_index += len(values_dict[index_labels[j]].items())
+        #print("LEN:", write_index)
         assert write_index == NUM_COLS
     return linearized_data, labels
 
