@@ -2,8 +2,9 @@ from baseline import Baseline
 import linear_data_loader as ldl
 import numpy as np
 import util
+from tqdm import tqdm
 
-FEATURE_DIM = 4153
+FEATURE_DIM = 297
 NUM_ACTIONS = 3
 
 class Lin_UCB():
@@ -19,8 +20,7 @@ class Lin_UCB():
         return "Linear UCB"
     
     def train(self, data, labels):
-        for i in range(len(labels)):
-            print(i)
+        for i in tqdm(range(len(labels))):
             self.update(data[i,:], labels[i])
         
     def update(self, features, l):
@@ -75,4 +75,3 @@ if __name__ == '__main__':
     print("accuracy on linear UCB: " + str(acc))
     
     test_lin_ucb_full(data, true_buckets, alpha=0.1)
-    
