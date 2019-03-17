@@ -31,6 +31,9 @@ for T in range(NUM_BATCHES):
     pred_buckets = lin_ucb.evaluate(data)
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print(batch_id, "accuracy on linear UCB: " + str(acc))
+    bucket_acc = util.get_bucket_accuracy(pred_buckets, true_buckets)
+    print(batch_id, "bucket accuracy on linear UCB: " + str(bucket_acc))
+
     plot_regret(lin_ucb.regret, ALPHA, batch_id)
     plot_error_rate(lin_ucb.error_rate, ALPHA, batch_id)
 
