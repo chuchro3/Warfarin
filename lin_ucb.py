@@ -93,21 +93,27 @@ def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on linear UCB: " + str(acc))
 
-def plot_regret(regrets, alpha):
+def plot_regret(regrets, alpha, suffix=''):
     plt.clf()
     plt.title('Regret - ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
     plt.xlabel('Samples Seen')
     plt.ylabel('Regret')
     plt.plot(range(1, 1+ len(regrets)), regrets)
-    plt.savefig('plots/regret'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+    if suffix == '':
+        plt.savefig('plots/regret'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+    else:
+        plt.savefig('plots/regret'+suffix)
 
-def plot_error_rate(error_rates, alpha):
+def plot_error_rate(error_rates, alpha, suffix=''):
     plt.clf()
     plt.title('Error Rate- ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
     plt.xlabel('Samples Seen')
     plt.ylabel('Cumulative Error Rate')
     plt.plot(range(1, 1+ len(error_rates)), error_rates)
-    plt.savefig('plots/error'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+    if suffix == '':
+        plt.savefig('plots/error'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+    else:
+        plt.savefig('plots/error'+suffix)
 
 if __name__ == '__main__':
     data, true_labels = ldl.get_data_linear()
