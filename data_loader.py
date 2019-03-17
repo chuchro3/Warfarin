@@ -77,6 +77,9 @@ def get_data():
                         else:
                             raise Exception('Should not happen')
                 row.append(col_val)
+                label_class = LABELS[i - adjust]
+                if col_val not in values_dict[label_class]:
+                  values_dict[label_class][col_val] = len(values_dict[label_class])
               else:
                   label_class = LABELS[i - adjust]
                   if col_val not in values_dict[label_class]:
@@ -87,7 +90,7 @@ def get_data():
             data.append(row)
             labels.append(label)
 
-    assert len(values_dict.keys()) + len(FLOAT_LABELS) == len(columns_dict.keys()), "length of non-float values and total columns dicts should match"
+    assert len(values_dict.keys()) == len(columns_dict.keys()), "length of non-float values and total columns dicts should match"
 
     data = np.array(data)
     labels = np.array(labels)
