@@ -22,6 +22,32 @@ def get_accuracy(labels, true_labels):
 
     return corr / len(labels)
 
+def get_bucket_accuracy(labels, true_labels):
+    buckets = set()
+    acc_dic = {}
+    t_dic = {}
+    for i in range(len(labels)):
+        #l = bucket(labels[i])
+        l = labels[i] 
+        #lt = bucket(true_labels[i])
+        lt = true_labels[i]
+        buckets.add(l)
+        buckets.add(lt)
+        if l == lt:
+            if l in acc_dic:
+                acc_dic[lt] += 1
+            else:
+                acc_dic[lt] = 1
+        if lt in t_dic:
+            t_dic[lt] += 1
+        else:
+            t_dic[lt] = 1
+    acc = np.zeros(len(buckets))
+    print(acc_dic)
+    print(t_dic)
+    for k in acc_dic:
+        acc[k] = 1. * acc_dic[k] / t_dic[k]
+    return acc
 
 def get_accuracy_bucketed(labels, true_labels):
     corr = 0
