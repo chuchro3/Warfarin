@@ -2,6 +2,8 @@ import linear_data_loader as ldl
 import numpy as np
 import util
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import datetime
 
 FEATURE_DIM = ldl.NUM_COLS
 NUM_ACTIONS = 3
@@ -82,6 +84,7 @@ class Lin_UCB():
          
         choose_action = np.argmax(p)
         return choose_action
+
     
 def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     lin_ucb = Lin_UCB(alpha = alpha)
@@ -90,20 +93,32 @@ def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on linear UCB: " + str(acc))
 
+def plot_regret(regrets, alpha):
+    plt.clf()
+    plt.title('Regret - ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
+    plt.xlabel('Samples Seen')
+    plt.ylabel('Regret')
+    plt.plot(range(1, 1+ len(regrets)), regrets)
+    plt.savefig('plots/regret'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+
+def plot_error_rate(error_rates, alpha):
+    plt.clf()
+    plt.title('Error Rate- ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
+    plt.xlabel('Samples Seen')
+    plt.ylabel('Cumulative Error Rate')
+    plt.plot(range(1, 1+ len(error_rates)), error_rates)
+    plt.savefig('plots/error'+str(alpha).replace('.','_')+ datetime.datetime.now().strftime('%s'))
+
 if __name__ == '__main__':
     data, true_labels = ldl.get_data_linear()
     true_buckets = [util.bucket(t) for t in true_labels]
     
-    lin_ucb = Lin_UCB(alpha = 0.1)
-    lin_ucb.train(data[1:3,:], true_labels[1:3])
-    pred_buckets = lin_ucb.evaluate(data[5:10,])
-    
-    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets[5:10])
-    print("accuracy on linear UCB: " + str(acc))
-    
-    # test_lin_ucb_full(data, true_buckets, alpha=0.1)
-    lin_ucb = Lin_UCB(alpha = 0.1)
+    ALPHA = 0.1
+
+    lin_ucb = Lin_UCB(alpha = ALPHA)
     lin_ucb.train(data, true_buckets)
     pred_buckets = lin_ucb.evaluate(data)
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on linear UCB: " + str(acc))
+    plot_regret(lin_ucb.regret, ALPHA)
+    plot_error_rate(lin_ucb.error_rate, ALPHA)
