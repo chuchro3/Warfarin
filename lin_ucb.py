@@ -12,9 +12,9 @@ class Lin_UCB():
         self.alpha = alpha
         self.K = K
         self.d = d
-        self.A = [np.identity(self.d)] * K 
-        self.A_inv = [np.identity(self.d)] * K 
-        self.b = [np.zeros(self.d)] * K 
+        self.A = [np.identity(self.d) for k in range(K)]
+        self.A_inv = [np.identity(self.d) for k in range(K)]
+        self.b = [np.zeros(self.d) for k in range(K)]
         self.theta = None
 
     def __str__(self):
