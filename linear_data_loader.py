@@ -10,10 +10,9 @@ from data_loader import get_data
 WARFARIN_FILE_PATH = './data/warfarin.csv'
 DATA_COLUMNS = 65
 LABEL_COLUMN = 'Therapeutic Dose of Warfarin'
-
-FLOAT_LABELS = ['Age', 'Height (cm)', 'Weight (kg)', 'INR on Reported Therapeutic Dose of Warfarin']
+ #FLOAT_LABELS = ['Age', 'Height (cm)', 'Weight (kg)', 'INR on Reported Therapeutic Dose of Warfarin']
+FLOAT_LABELS = ['Height (cm)', 'Weight (kg)', 'INR on Reported Therapeutic Dose of Warfarin']
 IGNORE_LABELS = ['Comorbidities', 'Medications']
-LABELS = []
 
 # returns:
 # - data (n x m)
@@ -23,15 +22,21 @@ LABELS = []
 def get_data_linear():
     data, labels, columns_dict, values_dict = get_data()
 
+    NUM_COLS = 0
     index_labels = {}
     for k in columns_dict:
         index_labels[columns_dict[k]] = k
+        if k in FLOAT_LABELS:
+            NUM_COLS += 1
+        elif k not in IGNORE_LABELS:
+            NUM_COLS += len(values_dict[k].items())
+        print(k, ': ', NUM_COLS)
 
     # DANGEROUS: RAN ONCE TO FIGURE OUT SHAPE.
     NUM_ROWS = 5528
-    NUM_COLS = 297
     # do not change the above unless shape of data changes.
     linearized_data = np.zeros((NUM_ROWS, NUM_COLS))
+    print ("SHAPE OF DATA:", linearized_data.shape)
     for i, d in enumerate(data):
         write_index = 0
         for j, val in enumerate(d):
@@ -48,3 +53,4 @@ def get_data_linear():
         assert write_index == NUM_COLS
     return linearized_data, labels
 
+linearized_data, labels = get_data_linear()

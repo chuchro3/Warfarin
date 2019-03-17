@@ -38,6 +38,3 @@ if __name__ == '__main__':
 
     clinical = Warfarin_Clinical_Dose(columns_dict, values_dict)
     test_data_baseline(clinical, data, true_labels)
-
-    lin_ucb = Lin_UCB(columns_dict, values_dict, 1, 1)
-    test_data_baseline(lin_ucb, data, true_labels)
