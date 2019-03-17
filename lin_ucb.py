@@ -1,4 +1,3 @@
-from baseline import Baseline
 import linear_data_loader as ldl
 import numpy as np
 import util
@@ -16,6 +15,10 @@ class Lin_UCB():
         self.A_inv = [np.identity(self.d) for k in range(K)]
         self.b = [np.zeros(self.d) for k in range(K)]
         self.theta = None
+        self.regret = []
+        self.error_rate = []
+        self.cumu_regret = 0
+        self.sample_counter = 0
 
     def __str__(self):
         return "Linear UCB"
@@ -25,6 +28,8 @@ class Lin_UCB():
             self.update(data[i,:], labels[i])
         
     def update(self, features, l):
+        self.sample_counter += 1
+        
         self.A_inv = [np.linalg.inv(a) for a in self.A]
         self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
         choose_action = self._evaluate_datum(features)
@@ -34,9 +39,21 @@ class Lin_UCB():
             r = 1
         else:
             r = 0
+            self.cumu_regret -= 1 # regret minus 1
+
         self.A[choose_action] += np.outer(features, features)
         self.b[choose_action] += features * r
+        
+        self.regret.append(self.cumu_regret)
+        self.error_rate.append(-self.cumu_regret/self.sample_counter)
+
     
+    def get_regret(self):
+        return self.regret
+    
+    def get_error_rate(self):
+        return self.error_rate
+            
     def evaluate(self, data):
         """
         Given a data (NxM) input, return the corresponding dose
