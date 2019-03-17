@@ -20,6 +20,10 @@ class Lin_UCB():
         self.cumu_regret = 0
         self.sample_counter = 0
 
+        # evaluating A_inv and theta moved here for efficiency.
+        self.A_inv = [np.linalg.inv(a) for a in self.A]
+        self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
+
     def __str__(self):
         return "Linear UCB"
     
@@ -30,8 +34,6 @@ class Lin_UCB():
     def update(self, features, l):
         self.sample_counter += 1
         
-        self.A_inv = [np.linalg.inv(a) for a in self.A]
-        self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
         choose_action = self._evaluate_datum(features)
         # observe reward r in {-1, 0}, turn it into {0, 1} for the algorithm
         # update A
@@ -43,6 +45,9 @@ class Lin_UCB():
 
         self.A[choose_action] += np.outer(features, features)
         self.b[choose_action] += features * r
+
+        self.A_inv[choose_action] = np.linalg.inv(self.A[choose_action])
+        self.theta[choose_action] = self.A_inv[choose_action].dot(self.b[choose_action])
         
         self.regret.append(self.cumu_regret)
         self.error_rate.append(-self.cumu_regret/self.sample_counter)
