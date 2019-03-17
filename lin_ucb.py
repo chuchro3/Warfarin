@@ -4,7 +4,7 @@ import numpy as np
 import util
 from tqdm import tqdm
 
-FEATURE_DIM = 297
+FEATURE_DIM = ldl.NUM_COLS
 NUM_ACTIONS = 3
 
 class Lin_UCB():
