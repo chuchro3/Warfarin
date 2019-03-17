@@ -34,4 +34,12 @@ for T in range(NUM_BATCHES):
     plot_regret(lin_ucb.regret, ALPHA, )
     plot_error_rate(lin_ucb.error_rate, ALPHA)
 
+    batch_results.append(
+        (batch_id,
+         lin_ucb.get_regret()[-1],
+         lin_ucb.get_error_rate()[-1],
+         1 - acc))
 
+print()
+print("Batch Results:")
+print(batch_results)
