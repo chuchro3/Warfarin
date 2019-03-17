@@ -21,3 +21,12 @@ def get_accuracy(labels, true_labels):
             corr += 1
 
     return corr / len(labels)
+
+
+def get_accuracy_bucketed(labels, true_labels):
+    corr = 0
+    for i in range(len(labels)):
+        if labels[i] == true_labels[i]:
+            corr += 1
+
+    return corr / len(labels)

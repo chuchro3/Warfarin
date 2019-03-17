@@ -13,6 +13,7 @@ class Lin_UCB():
         self.K = K
         self.d = d
         self.A = [np.identity(self.d)] * K 
+        self.A_inv = [np.identity(self.d)] * K 
         self.b = [np.zeros(self.d)] * K 
         self.theta = None
 
@@ -24,7 +25,9 @@ class Lin_UCB():
             self.update(data[i,:], labels[i])
         
     def update(self, features, l):
-        choose_action = self.evaluate_datum(features)
+        self.A_inv = [np.linalg.inv(a) for a in self.A]
+        self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
+        choose_action = self._evaluate_datum(features)
         # observe reward r in {-1, 0}, turn it into {0, 1} for the algorithm
         # update A
         if l == choose_action:
@@ -40,17 +43,19 @@ class Lin_UCB():
 
         returns a list (Nx1) of labels
         """
+        self.A_inv = [np.linalg.inv(a) for a in self.A]
+        self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
+        
         labels = np.zeros(len(data))
         for i in range(len(data)):
-            labels[i] = self.evaluate_datum(data[i])
+            labels[i] = self._evaluate_datum(data[i])
         return labels
         
-    def evaluate_datum(self, features):
-        A_inv = [np.linalg.inv(a) for a in self.A]
-        self.theta = [a_inv.dot(b) for a_inv, b in zip(A_inv, self.b)]
+    def _evaluate_datum(self, features):
+        
         p = np.zeros(self.K)
         for i in range(len(p)):
-            tmp = features.T.dot(A_inv[i]).dot(features)
+            tmp = features.T.dot(self.A_inv[i]).dot(features)
             p[i] = self.theta[i].dot(features) + self.alpha * np.sqrt(tmp)
          
         choose_action = np.argmax(p)
@@ -60,7 +65,7 @@ def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     lin_ucb = Lin_UCB(alpha = alpha)
     lin_ucb.train(data, true_buckets)
     pred_buckets = lin_ucb.evaluate(data)
-    acc = util.get_accuracy(pred_buckets, true_buckets)
+    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on linear UCB: " + str(acc))
 
 if __name__ == '__main__':
@@ -69,9 +74,14 @@ if __name__ == '__main__':
     
     lin_ucb = Lin_UCB(alpha = 0.1)
     lin_ucb.train(data[1:3,:], true_labels[1:3])
-    pred_buckets = lin_ucb.evaluate(data[5:10,:])
+    pred_buckets = lin_ucb.evaluate(data[5:10,])
     
-    acc = util.get_accuracy(pred_buckets, true_buckets)
+    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets[5:10])
     print("accuracy on linear UCB: " + str(acc))
     
-    test_lin_ucb_full(data, true_buckets, alpha=0.1)
+    # test_lin_ucb_full(data, true_buckets, alpha=0.1)
+    lin_ucb = Lin_UCB(alpha = 0.1)
+    lin_ucb.train(data, true_buckets)
+    pred_buckets = lin_ucb.evaluate(data)
+    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
+    print("accuracy on linear UCB: " + str(acc))
