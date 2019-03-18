@@ -22,10 +22,15 @@ def test_data_baseline(alg, data, true_labels):
 
     alg.train(data, true_labels)
     
-    labels = alg.evaluate(data)
+    labels = list(map(util.bucket, alg.evaluate(data)))
+    true_labels = list(map(util.bucket, true_labels))
 
-    acc = util.get_accuracy(labels, true_labels)
+    print()
+    acc = util.get_accuracy_bucketed(labels, true_labels)
     print("accuracy on data with " + str(alg) + ": " + str(acc))
+
+    bucket_acc = util.get_bucket_accuracy(labels, true_labels)
+    print("bucket accuracy with " + str(alg) + ":" + str(bucket_acc))
 
 if __name__ == '__main__':
 
