@@ -16,7 +16,7 @@ def run_model(model):
     data, true_labels = ldl.get_data_linear()
     true_buckets = [util.bucket(t) for t in true_labels]
 
-    # tuples of (batch_id, total regret, error while training, eval error)
+    # tuples of (batch_id, total regret, error while training, eval error, precision, recall)
     batch_results = []
 
     for T in range(NUM_BATCHES):
@@ -31,10 +31,12 @@ def run_model(model):
 
         model.train(data, true_buckets)
         pred_buckets = model.evaluate(data)
-        acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
-        print(batch_id, "accuracy on " + str(model) + ":" + str(acc))
-        bucket_acc = util.get_bucket_accuracy(pred_buckets, true_buckets)
-        print(batch_id, "bucket accuracy on " + str(model) + ":" + str(bucket_acc))
+        print(batch_id, "Performance on " + str(model))
+        acc, precision, recall = util.evaluate_performance(pred_buckets, true_buckets)
+        print("\tAccuracy:", acc)
+        print("\tPrecision:", precision)
+        print("\tRecall:", recall)
+        
 
         plot_regret(model.regret, ALPHA, batch_id)
         plot_error_rate(model.error_rate, ALPHA, batch_id)
@@ -43,7 +45,9 @@ def run_model(model):
             (batch_id,
              model.get_regret()[-1],
              model.get_error_rate()[-1],
-             1 - acc))
+             1 - acc,
+             precision,
+             recall))
     return batch_results
 
 #model = Lin_UCB(ALPHA)
