@@ -4,8 +4,6 @@ import util
 from util import plot_error_rate
 from util import plot_regret
 from tqdm import tqdm
-import matplotlib.pyplot as plt
-import datetime
 
 FEATURE_DIM = ldl.NUM_COLS
 NUM_ACTIONS = 3
