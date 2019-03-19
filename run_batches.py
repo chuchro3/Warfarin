@@ -3,8 +3,8 @@ import numpy as np
 import random
 import util
 from lin_ucb import Lin_UCB
-from lin_ucb import plot_error_rate
-from lin_ucb import plot_regret
+from util import plot_error_rate
+from util import plot_regret
 from lasso_bandit import LASSO_BANDIT
 
 

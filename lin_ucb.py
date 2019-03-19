@@ -1,6 +1,8 @@
 import linear_data_loader as ldl
 import numpy as np
 import util
+from util import plot_error_rate
+from util import plot_regret
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import datetime
@@ -93,27 +95,6 @@ def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on linear UCB: " + str(acc))
 
-def plot_regret(regrets, alpha, suffix=''):
-    plt.clf()
-    plt.title('Regret - ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
-    plt.xlabel('Samples Seen')
-    plt.ylabel('Regret')
-    plt.plot(range(1, 1+ len(regrets)), regrets)
-    if suffix == '':
-        plt.savefig('plots/regret'+str(alpha).replace('.','_')+ '_' + datetime.datetime.now().strftime('%s'))
-    else:
-        plt.savefig('plots/regret'+ '_' + suffix)
-
-def plot_error_rate(error_rates, alpha, suffix=''):
-    plt.clf()
-    plt.title('Error Rate- ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
-    plt.xlabel('Samples Seen')
-    plt.ylabel('Cumulative Error Rate')
-    plt.plot(range(1, 1+ len(error_rates)), error_rates)
-    if suffix == '':
-        plt.savefig('plots/error'+str(alpha).replace('.','_')+ '_' +datetime.datetime.now().strftime('%s'))
-    else:
-        plt.savefig('plots/error'+ '_' + suffix)
 
 if __name__ == '__main__':
     data, true_labels = ldl.get_data_linear()

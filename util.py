@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def bucket(dose):
     """
@@ -94,3 +95,27 @@ def get_accuracy_bucketed(labels, true_labels):
             corr += 1
 
     return corr / len(labels)
+
+
+
+def plot_regret(regrets, alpha, suffix=''):
+    plt.clf()
+    plt.title('Regret - ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
+    plt.xlabel('Samples Seen')
+    plt.ylabel('Regret')
+    plt.plot(range(1, 1+ len(regrets)), regrets)
+    if suffix == '':
+        plt.savefig('plots/regret'+str(alpha).replace('.','_')+ '_' + datetime.datetime.now().strftime('%s'))
+    else:
+        plt.savefig('plots/regret'+ '_' + suffix)
+
+def plot_error_rate(error_rates, alpha, suffix=''):
+    plt.clf()
+    plt.title('Error Rate- ' + str(alpha) + ' - ' + datetime.datetime.now().strftime("%D - %H:%M:%S"))
+    plt.xlabel('Samples Seen')
+    plt.ylabel('Cumulative Error Rate')
+    plt.plot(range(1, 1+ len(error_rates)), error_rates)
+    if suffix == '':
+        plt.savefig('plots/error'+str(alpha).replace('.','_')+ '_' +datetime.datetime.now().strftime('%s'))
+    else:
+        plt.savefig('plots/error'+ '_' + suffix)
