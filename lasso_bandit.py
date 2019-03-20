@@ -8,6 +8,7 @@ from sklearn import linear_model
 import matplotlib.pyplot as plt
 import datetime
 
+FORCED_SAMPLES = 50
 FEATURE_DIM = ldl.NUM_COLS
 NUM_ACTIONS = 3
 LAMBDA = 0.1
@@ -40,7 +41,7 @@ class LASSO_BANDIT():
         self.cumu_regret = 0
 
         # LASSO bandit specific params
-        self.T_i = [set(range(arm*50, (arm+1)*50)) for arm in range(self.K)]
+        self.T_i = [set(range(arm*FORCED_SAMPLES, (arm+1)*FORCED_SAMPLES)) for arm in range(self.K)]
         self.S_i = [[] for arm in range(self.K)]
         self.Y_i = [[] for arm in range(self.K)]
         self.timestep_t = 0

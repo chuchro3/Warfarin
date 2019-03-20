@@ -20,11 +20,43 @@ def evaluate_performance(labels, true_labels):
     acc = get_accuracy_bucketed(labels, true_labels)
     prec = get_bucket_precision(labels, true_labels)
     recall = get_bucket_recall(labels, true_labels)
-    
+    f1 = get_f1_score(prec, recall) 
+    dang = get_dangerous(labels, true_labels)
+
     print("Accuracy: " + str(acc))
     print("Precision: " + str(prec))
     print("Recall: " + str(recall))
+    print("F1 Score: " + str(f1))
+    print("Dangerous dose: " + str(dang))
     return acc, prec, recall
+
+def get_dangerous(labels, true_labels):
+    buckets = set()
+    acc_dic = {}
+    t_dic = {}
+    for i in range(len(labels)):
+        #l = bucket(labels[i])
+        l = labels[i] 
+        #lt = bucket(true_labels[i])
+        lt = true_labels[i]
+        buckets.add(l)
+        buckets.add(lt)
+        if (l == 0 and lt == 2) or (l == 2 and lt == 0):
+            if lt in acc_dic:
+                acc_dic[lt] += 1
+            else:
+                acc_dic[lt] = 1
+        if lt in t_dic:
+            t_dic[lt] += 1
+        else:
+            t_dic[lt] = 1
+    acc = np.zeros(len(buckets))
+    for k in acc_dic:
+        acc[k] = 1. * acc_dic[k] / t_dic[k]
+    return acc
+
+def get_f1_score(precision, recall):
+    return 2. * (precision * recall) / (precision + recall)
 
 def get_accuracy(labels, true_labels):
     corr = 0

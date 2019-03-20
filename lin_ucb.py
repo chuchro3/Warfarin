@@ -40,10 +40,12 @@ class Lin_UCB():
         # observe reward r in {-1, 0}, turn it into {0, 1} for the algorithm
         # update A
         if l == choose_action:
+            #r = 0
             r = 1
         else:
+            #r = -1. * (abs(l - choose_action) ** 3)
             r = 0
-            self.cumu_regret -= 1 # regret minus 1
+            self.cumu_regret -= r # regret minus 1
 
         self.A[choose_action] += np.outer(features, features)
         self.b[choose_action] += features * r
@@ -90,8 +92,8 @@ def test_lin_ucb_full(data, true_buckets, alpha=0.1):
     lin_ucb = Lin_UCB(alpha = alpha)
     lin_ucb.train(data, true_buckets)
     pred_buckets = lin_ucb.evaluate(data)
-    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
-    print("accuracy on linear UCB: " + str(acc))
+    acc, precision, recall = util.evaluate_performance(pred_buckets, true_buckets)
+    #print("accuracy on linear UCB: " + str(acc))
 
 
 if __name__ == '__main__':
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     lin_ucb = Lin_UCB(alpha = ALPHA)
     lin_ucb.train(data, true_buckets)
     pred_buckets = lin_ucb.evaluate(data)
-    acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
-    print("accuracy on linear UCB: " + str(acc))
+    acc, precision, recall = util.evaluate_performance(pred_buckets, true_buckets)
+    #print("accuracy on linear UCB: " + str(acc))
     plot_regret(lin_ucb.regret, ALPHA)
     plot_error_rate(lin_ucb.error_rate, ALPHA)

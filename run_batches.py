@@ -12,7 +12,7 @@ NUM_BATCHES = 10
 ALPHA = 0.1
 
 
-def run_model(model):
+def run_model():
     data, true_labels = ldl.get_data_linear()
     true_buckets = [util.bucket(t) for t in true_labels]
 
@@ -20,6 +20,9 @@ def run_model(model):
     batch_results = []
 
     for T in range(NUM_BATCHES):
+        model = Lin_UCB(ALPHA)
+        #model = LASSO_BANDIT()
+        
         batch_id = str(random.randint(100000, 999999))
         print()
         print("Start Batch: ", batch_id)
@@ -50,10 +53,8 @@ def run_model(model):
              recall))
     return batch_results
 
-#model = Lin_UCB(ALPHA)
-model = LASSO_BANDIT()
 
-batch_results = run_model(model)
+batch_results = run_model()
 print()
 print("Batch Results:")
 print(batch_results)

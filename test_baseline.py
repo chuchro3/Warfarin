@@ -25,12 +25,12 @@ def test_data_baseline(alg, data, true_labels):
     labels = list(map(util.bucket, alg.evaluate(data)))
     true_labels = list(map(util.bucket, true_labels))
 
-    print()
-    acc = util.get_accuracy_bucketed(labels, true_labels)
-    print("accuracy on data with " + str(alg) + ": " + str(acc))
+    print("##### " + str(alg) + "#####")
+    #acc = util.get_accuracy_bucketed(labels, true_labels)
+    #print("accuracy on data with " + str(alg) + ": " + str(acc))
 
-    bucket_acc = util.get_bucket_accuracy(labels, true_labels)
-    print("bucket accuracy with " + str(alg) + ":" + str(bucket_acc))
+    acc, precision, recall = util.evaluate_performance(labels, true_labels)
+    #print("bucket accuracy with " + str(alg) + ":" + str(bucket_acc))
 
 if __name__ == '__main__':
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     
     fixed = Fixed_Dose(columns_dict, values_dict)
     
-    test_dummy_baseline(fixed)
+    #test_dummy_baseline(fixed)
     test_data_baseline(fixed, data, true_labels)
 
     clinical = Warfarin_Clinical_Dose(columns_dict, values_dict)
