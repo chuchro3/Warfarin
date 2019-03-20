@@ -12,9 +12,15 @@ NUM_BATCHES = 10
 ALPHA = 0.1
 
 
+DATA_MULTIPLIER = 10
+
 def run_model():
     data, true_labels = ldl.get_data_linear()
     true_buckets = [util.bucket(t) for t in true_labels]
+
+    data = np.tile(data, (DATA_MULTIPLIER,1))
+    print("DATA SHAPE:", data.shape)
+    true_buckets = np.tile(true_buckets, DATA_MULTIPLIER)
 
     # tuples of (batch_id, total regret, error while training, eval error, precision, recall)
     batch_results = []
