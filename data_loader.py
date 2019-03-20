@@ -50,6 +50,9 @@ def get_data():
           adjust = 0
           add_data = True
           for i,col_val in enumerate(r[1:]):
+            col_val = col_val.strip()
+            if col_val == 'N/A' or col_val == '':
+                col_val = 'NA'
             if i == label_index:
               if col_val == 'NA':  # toss out this sample
                 add_data = False
