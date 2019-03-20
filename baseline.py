@@ -87,9 +87,13 @@ class Warfarin_Pharmacogenetic_Dose(Baseline):
         dose += 0.0087 * datum[self.columns_dict['Height (cm)']]
         dose += 0.0128 * datum[self.columns_dict['Weight (kg)']]
         vk_gene = 'VKORC1 genotype: -1639 G>A (3673); chr16:31015190; rs9923231; C/T'
-        dose -= 0.8677 * datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['A/G']
-        dose -= 1.6974 * datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['A/A']
-        dose -= 0.4854 * datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['NA']
+        vk_gene2 = 'VKORC1 QC genotype: -1639 G>A (3673); chr16:31015190; rs9923231; C/T'
+        dose -= 0.8677 * (datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['A/G'] or
+                          datum[self.columns_dict[vk_gene2]] == self.values_dict[vk_gene2]['A/G'])
+        dose -= 1.6974 * (datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['A/A'] or
+                          datum[self.columns_dict[vk_gene2]] == self.values_dict[vk_gene2]['A/A'])
+        dose -= 0.4854 * (datum[self.columns_dict[vk_gene]] == self.values_dict[vk_gene]['NA'] and
+                          datum[self.columns_dict[vk_gene2]] == self.values_dict[vk_gene2]['NA'])
         dose -= 0.5211 * datum[self.columns_dict['CYP2C9 consensus']] == self.values_dict['CYP2C9 consensus']['*1/*2']
         dose -= 0.9357 * datum[self.columns_dict['CYP2C9 consensus']] == self.values_dict['CYP2C9 consensus']['*1/*3']
         dose -= 1.0616 * datum[self.columns_dict['CYP2C9 consensus']] == self.values_dict['CYP2C9 consensus']['*2/*2'] 
