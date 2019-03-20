@@ -41,11 +41,11 @@ class Lin_UCB():
         # update A
         if l == choose_action:
             #r = 0
-            r = 1
+            r = 0
         else:
             #r = -1. * (abs(l - choose_action) ** 3)
-            r = 0
-            self.cumu_regret -= r # regret minus 1
+            r = -1
+            self.cumu_regret += -1 # regret minus 1
 
         self.A[choose_action] += np.outer(features, features)
         self.b[choose_action] += features * r
