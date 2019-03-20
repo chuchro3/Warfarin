@@ -89,6 +89,7 @@ class LASSO_BANDIT():
 
         # play the arm, and observe the reward.
         self.Y_i[action_t].append(0 if action_t == l else -1)
+        #self.Y_i[action_t].append(-abs(action_t - l)**2)
 
         # update the model for the arm that was pulled
         self._update_model(action_t,
