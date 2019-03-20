@@ -27,7 +27,7 @@ def evaluate_performance(labels, true_labels):
     print("Precision: " + str(prec))
     print("Recall: " + str(recall))
     print("F1 Score: " + str(f1))
-    print("Dangerous dose: " + str(dang))
+    print("Dangerous dose ratio: " + str(dang))
     return acc, prec, recall
 
 def get_dangerous(labels, true_labels):
@@ -51,6 +51,7 @@ def get_dangerous(labels, true_labels):
         else:
             t_dic[lt] = 1
     acc = np.zeros(len(buckets))
+    print("dangerous dose count: " + str(acc_dic))
     for k in acc_dic:
         acc[k] = 1. * acc_dic[k] / t_dic[k]
     return acc
