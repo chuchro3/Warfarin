@@ -12,7 +12,7 @@ NUM_BATCHES = 10
 ALPHA = 0.1
 
 
-DATA_MULTIPLIER = 10
+DATA_MULTIPLIER = 1
 
 def run_model():
     data, true_labels = ldl.get_data_linear()
@@ -26,8 +26,8 @@ def run_model():
     batch_results = []
 
     for T in range(NUM_BATCHES):
-        model = Lin_UCB(ALPHA)
-        #model = LASSO_BANDIT()
+        #model = Lin_UCB(ALPHA)
+        model = LASSO_BANDIT()
         
         batch_id = str(random.randint(100000, 999999))
         print()

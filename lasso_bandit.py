@@ -16,6 +16,9 @@ LAMBDA = 0.1
 UPDATE_EVERY_X_ITERS = 1
 
 
+UPDATE_ALL_ARMS = True
+
+
 class LASSO_BANDIT():
     def _predict_reward(self, arm, features):
         return self.model[arm].predict([features])[0]
@@ -81,21 +84,30 @@ class LASSO_BANDIT():
 
         assert action_t != -1, "No arm was selected..."
 
-        # add the arm to the observations
-        self.S_i[action_t].append(features)
         # update lambda
         self.lambda_t = self.lambda_0 * np.sqrt(
                 (np.log((self.timestep_t)) + np.log(self.d)) / self.timestep_t)
 
-        # play the arm, and observe the reward.
-        self.Y_i[action_t].append(0 if action_t == l else -1)
-        #self.Y_i[action_t].append(-abs(action_t - l)**2)
+        if not UPDATE_ALL_ARMS:
+            # add the observations to the arm's data
+            self.S_i[action_t].append(features)
+            # add the rewards to the arm's data
+            self.Y_i[action_t].append(0 if action_t == l else -1)
+            #self.Y_i[action_t].append(-abs(action_t - l)**2)
 
-        # update the model for the arm that was pulled
-        self._update_model(action_t,
-                           np.array(self.S_i[action_t]),
-                           np.array(self.Y_i[action_t]),
-                           self.lambda_t)
+            # update the model for the arm that was pulled
+            self._update_model(action_t,
+                               np.array(self.S_i[action_t]),
+                               np.array(self.Y_i[action_t]),
+                               self.lambda_t)
+        else:   # modification to LASSO bandit: update all arms with the data
+            for arm in range(self.K):
+                self.Y_i[arm].append(-abs(arm - l))
+                self.S_i[arm].append(features)
+                self._update_model(arm,
+                                   np.array(self.S_i[arm]),
+                                   np.array(self.Y_i[arm]),
+                                   self.lambda_t)
 
         # metrics collection
         self.cumu_regret += (0 if action_t == l else -1)
