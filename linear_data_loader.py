@@ -15,9 +15,14 @@ FLOAT_LABELS = [
 ]
 
 IGNORE_LABELS = [
-    'Comorbidities',
-    'Medications'
+    'Medications',
+    'Comorbidities'
 ]
+
+DISEASE_LABEL = 'Comorbidities'
+
+# switch to True if want to 
+INCLUDE_DISEASES = False
 
 # DO NOT ACCESS NUM_COLS BEFORE CALLING get_data_linear
 NUM_COLS = 0
@@ -32,6 +37,18 @@ NUM_COLS_INITIALIZED = False
 def get_data_linear():
     data, labels, columns_dict, values_dict = get_data()
 
+    # preprocess the diseases
+    disease_dict = {}
+    key_to_disease_string = {}
+    for k in values_dict[DISEASE_LABEL]:
+        diseases = map(str.strip, k.split(';'))
+        key_to_disease_string[values_dict[DISEASE_LABEL][k]] = k
+        for d in diseases:
+            if d not in disease_dict:
+                disease_dict[d] = len(disease_dict)
+    print("DISEASES:", len(disease_dict))
+    # end disease preprocess
+
     # DANGEROUS: RAN ONCE TO FIGURE OUT NUM OF ROWS.
     NUM_ROWS = 5528
     global NUM_COLS
@@ -43,7 +60,11 @@ def get_data_linear():
             elif k not in IGNORE_LABELS:
                 NUM_COLS += len(values_dict[k].items())
         NUM_COLS_INITIALIZED = True
+
+        if INCLUDE_DISEASES:
+            NUM_COLS += len(disease_dict)
     # do not change the above unless amount of data changes.
+
 
     index_labels = {}
     for k in columns_dict:
@@ -54,11 +75,16 @@ def get_data_linear():
     for i, d in enumerate(data):
         write_index = 0
         for j, val in enumerate(d):
-            if index_labels[j] in IGNORE_LABELS:
-                continue
-            elif index_labels[j] in FLOAT_LABELS:
+            if index_labels[j] in FLOAT_LABELS:
                 linearized_data[i,write_index] = val
                 write_index += 1
+            elif INCLUDE_DISEASES and index_labels[j] == DISEASE_LABEL:
+                diseases = map(str.strip, key_to_disease_string[val].split(';'))
+                for dis in diseases:
+                    linearized_data[i, write_index + disease_dict[dis]] = 1
+                write_index += len(disease_dict)
+            elif index_labels[j] in IGNORE_LABELS:
+                continue
             else:
                 assert val == int(val), 'Value must be a value index'
                 linearized_data[i,write_index + int(val)] = 1
