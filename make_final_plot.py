@@ -52,7 +52,7 @@ def get_CI_data(file_names, flip_neg = False):
 
     return mean, lower, upper
 
-# GET THE DATA FOR ERROR
+#-----------ERROR--------
 lin_ucb_error_data_files = ['errorLinear UCB440799',
                      'errorLinear UCB624516',
                      'errorLinear UCB708433',
@@ -63,19 +63,57 @@ lin_ucb_error_data_files = ['errorLinear UCB440799',
                      'errorLinear UCB734551',
                      'errorLinear UCB783172',
                      'errorLinear UCB973196']
-
 lin_ucb_error_data = get_CI_data(lin_ucb_error_data_files, True)
 
-lineplotCI(100, [('Lin UCB',  '#539caf', *lin_ucb_error_data)], 'timestep t', 'cumulative error', 'Error Rate', True)
+fixed_error_data_files = 'errorFixed232923 errorFixed280014 errorFixed294651 errorFixed386298 errorFixed485167 errorFixed596273 errorFixed694588 errorFixed720326 errorFixed942363 errorFixed997216'.split()
+
+fixed_error_data = get_CI_data(fixed_error_data_files)
+
+clinical_error_data_files = 'errorWarfarinClinicalDose109457 errorWarfarinClinicalDose473473 errorWarfarinClinicalDose578688 errorWarfarinClinicalDose616370 errorWarfarinClinicalDose723731 errorWarfarinClinicalDose334008 errorWarfarinClinicalDose487420 errorWarfarinClinicalDose584850 errorWarfarinClinicalDose644573 errorWarfarinClinicalDose790409'.split()
+
+clinical_error_data = get_CI_data(clinical_error_data_files)
+
+pharm_error_data_files = 'errorWarfarinPharmacogeneticDose286728 errorWarfarinPharmacogeneticDose409989 errorWarfarinPharmacogeneticDose507431 errorWarfarinPharmacogeneticDose668561 errorWarfarinPharmacogeneticDose802457 errorWarfarinPharmacogeneticDose352938 errorWarfarinPharmacogeneticDose458765 errorWarfarinPharmacogeneticDose661494 errorWarfarinPharmacogeneticDose708887 errorWarfarinPharmacogeneticDose896116'.split()
+pharm_error_data = get_CI_data(pharm_error_data_files)
+
+
+lasso_error_data_files = 'errorLASSO_Bandit_nodis128985 errorLASSO_Bandit_nodis245874 errorLASSO_Bandit_nodis419803 errorLASSO_Bandit_nodis466501 errorLASSO_Bandit_nodis644341 errorLASSO_Bandit_nodis187417 errorLASSO_Bandit_nodis382761 errorLASSO_Bandit_nodis438574 errorLASSO_Bandit_nodis582776 errorLASSO_Bandit_nodis970244'.split()
+lasso_error_data = get_CI_data(lasso_error_data_files)
+
+lineplotCI(100,
+        [('Lin UCB',  '#539caf', *lin_ucb_error_data),
+         ('Fixed',  '#FFA07A', *fixed_error_data),
+         ('Clinical Oracle',  '#228B22', *clinical_error_data),
+         ('Pharmacogenetic Oracle',  '#EE82EE', *pharm_error_data),
+         ('LASSO Bandit',  '#FFD700', *lasso_error_data),
+        ],
+        'timestep t', 'cumulative error', 'Error Rate', True)
+#--------END ERROR--------
 
 
 lin_ucb_regret_files = map(lambda x: x.replace('error', 'regret'), lin_ucb_error_data_files)
 lin_ucb_regret_data = get_CI_data(lin_ucb_regret_files)
+
+fixed_regret_files = map(lambda x: x.replace('error', 'regret'), fixed_error_data_files)
+fixed_regret_data = get_CI_data(fixed_regret_files)
+
+clinical_regret_files = map(lambda x: x.replace('error', 'regret'), clinical_error_data_files)
+clinical_regret_data = get_CI_data(clinical_regret_files)
+
+pharm_regret_files = map(lambda x: x.replace('error', 'regret'), pharm_error_data_files)
+pharm_regret_data = get_CI_data(pharm_regret_files)
+
+lasso_regret_files = map(lambda x: x.replace('error', 'regret'), lasso_error_data_files)
+lasso_regret_data = get_CI_data(lasso_regret_files)
+
 lineplotCI(100,
         [('Lin UCB',  '#539caf', *lin_ucb_regret_data),
-         ('.39x',  '#000000', list(map(lambda x: 0.39 * x, range(0, 5528))),
-                              list(map(lambda x: 0.39 * x, range(0, 5528))),
-                              list(map(lambda x: 0.39 * x, range(0, 5528)))),
-        # ('Always Wrong',  '#000000', range(0, 5528), range(0,5528), range(0,5528))
+         ('Fixed',  '#FFA07A', *fixed_regret_data),
+         ('Clinical Oracle',  '#228B22', *clinical_regret_data),
+         ('Pharmacogenetic Oracle',  '#EE82EE', *pharm_regret_data),
+         ('LASSO Bandit',  '#FFD700', *lasso_regret_data),
+         ('y = 0.39x',  '#000000', list(map(lambda x: 0.39 * x, range(0, 5528))),
+                                      list(map(lambda x: 0.39 * x, range(0, 5528))),
+                                      list(map(lambda x: 0.39 * x, range(0, 5528)))),
         ],
         'timestep t', 'cumulative regret', 'Regret', True)
