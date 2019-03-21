@@ -80,12 +80,22 @@ pharm_error_data = get_CI_data(pharm_error_data_files)
 lasso_error_data_files = 'errorLASSO_Bandit_nodis128985 errorLASSO_Bandit_nodis245874 errorLASSO_Bandit_nodis419803 errorLASSO_Bandit_nodis466501 errorLASSO_Bandit_nodis644341 errorLASSO_Bandit_nodis187417 errorLASSO_Bandit_nodis382761 errorLASSO_Bandit_nodis438574 errorLASSO_Bandit_nodis582776 errorLASSO_Bandit_nodis970244'.split()
 lasso_error_data = get_CI_data(lasso_error_data_files)
 
+lin_ucb_disease_error_data_files = 'errorLinUCB_dis176459 errorLinUCB_dis448861 errorLinUCB_dis506081 errorLinUCB_dis668883 errorLinUCB_dis796048 errorLinUCB_dis229609 errorLinUCB_dis487298 errorLinUCB_dis593515 errorLinUCB_dis787344 errorLinUCB_dis942446'.split()
+lin_ucb_disease_error_data = get_CI_data(lin_ucb_disease_error_data_files)
+
+lasso_dis_error_data_files = 'errorLASSO_Bandit_dis122109 errorLASSO_Bandit_dis421003 errorLASSO_Bandit_dis492863 errorLASSO_Bandit_dis602104 errorLASSO_Bandit_dis773923 errorLASSO_Bandit_dis208179 errorLASSO_Bandit_dis427547 errorLASSO_Bandit_dis558990 errorLASSO_Bandit_dis743081 errorLASSO_Bandit_dis897925'.split()
+lasso_dis_error_data = get_CI_data(lasso_dis_error_data_files)
+
+
+
 lineplotCI(100,
         [('Lin UCB',  '#539caf', *lin_ucb_error_data),
          ('Fixed',  '#FFA07A', *fixed_error_data),
          ('Clinical Oracle',  '#228B22', *clinical_error_data),
          ('Pharmacogenetic Oracle',  '#EE82EE', *pharm_error_data),
          ('LASSO Bandit',  '#FFD700', *lasso_error_data),
+         ('LASSO w/ D. features',  '#18CAF5', *lasso_dis_error_data),
+         #('Lin UCB w/ D. features',  '#18CAF5', *lin_ucb_disease_error_data),
         ],
         'timestep t', 'cumulative error', 'Error Rate', True)
 #--------END ERROR--------
@@ -106,12 +116,21 @@ pharm_regret_data = get_CI_data(pharm_regret_files)
 lasso_regret_files = map(lambda x: x.replace('error', 'regret'), lasso_error_data_files)
 lasso_regret_data = get_CI_data(lasso_regret_files)
 
+lin_ucb_disease_regret_files = map(lambda x: x.replace('error', 'regret'), lin_ucb_disease_error_data_files)
+lin_ucb_disease_regret_data = get_CI_data(lin_ucb_disease_regret_files)
+
+lasso_dis_regret_files = map(lambda x: x.replace('error', 'regret'), lasso_dis_error_data_files)
+lasso_dis_regret_data = get_CI_data(lasso_dis_regret_files)
+
+
 lineplotCI(100,
         [('Lin UCB',  '#539caf', *lin_ucb_regret_data),
          ('Fixed',  '#FFA07A', *fixed_regret_data),
          ('Clinical Oracle',  '#228B22', *clinical_regret_data),
          ('Pharmacogenetic Oracle',  '#EE82EE', *pharm_regret_data),
          ('LASSO Bandit',  '#FFD700', *lasso_regret_data),
+         #('Lin UCB w/ D. features',  '#18CAF5', *lin_ucb_disease_regret_data),
+         ('Lasso w/ D. features',  '#18CAF5', *lasso_dis_regret_data),
          ('y = 0.39x',  '#000000', list(map(lambda x: 0.39 * x, range(0, 5528))),
                                       list(map(lambda x: 0.39 * x, range(0, 5528))),
                                       list(map(lambda x: 0.39 * x, range(0, 5528)))),
