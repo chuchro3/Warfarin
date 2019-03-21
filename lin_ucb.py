@@ -27,7 +27,7 @@ class Lin_UCB():
         self.theta = [a_inv.dot(b) for a_inv, b in zip(self.A_inv, self.b)]
 
     def __str__(self):
-        return "Linear UCB"
+        return "LinUCB_dis"
     
     def train(self, data, labels):
         for i in tqdm(range(len(labels))):
@@ -45,7 +45,7 @@ class Lin_UCB():
         else:
             #r = -1. * (abs(l - choose_action) ** 3)
             r = -1
-            self.cumu_regret += -1 # regret minus 1
+            self.cumu_regret += (0 - (-1))
 
         self.A[choose_action] += np.outer(features, features)
         self.b[choose_action] += features * r
@@ -54,7 +54,7 @@ class Lin_UCB():
         self.theta[choose_action] = self.A_inv[choose_action].dot(self.b[choose_action])
         
         self.regret.append(self.cumu_regret)
-        self.error_rate.append(-self.cumu_regret/self.sample_counter)
+        self.error_rate.append(self.cumu_regret/self.sample_counter)
 
     
     def get_regret(self):
