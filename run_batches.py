@@ -1,4 +1,5 @@
 import linear_data_loader as ldl
+import data_loader as dl
 import numpy as np
 import random
 import util
@@ -6,6 +7,11 @@ from lin_ucb import Lin_UCB
 from util import plot_error_rate
 from util import plot_regret
 from lasso_bandit import LASSO_BANDIT
+
+from baseline import Fixed_Dose, Warfarin_Clinical_Dose, Warfarin_Pharmacogenetic_Dose
+
+import pickle
+
 
 
 NUM_BATCHES = 10
@@ -26,8 +32,14 @@ def run_model():
     batch_results = []
 
     for T in range(NUM_BATCHES):
-        #model = Lin_UCB(ALPHA)
-        model = LASSO_BANDIT()
+        model = Lin_UCB(ALPHA)
+        #model = LASSO_BANDIT()
+        if False:
+            data, true_labels, columns_dict, values_dict = dl.get_data()
+            true_buckets = [util.bucket(t) for t in true_labels]
+        #model = Fixed_Dose(columns_dict, values_dict)
+        #model = Warfarin_Clinical_Dose(columns_dict, values_dict)
+        #model = Warfarin_Pharmacogenetic_Dose(columns_dict, values_dict)
         
         batch_id = str(random.randint(100000, 999999))
         print()
@@ -57,6 +69,12 @@ def run_model():
              1 - acc,
              precision,
              recall))
+
+        with open('batch/regret'+str(model) + batch_id, 'wb') as fp:
+            pickle.dump(model.regret, fp)
+        with open('batch/error'+str(model) + batch_id, 'wb') as fp:
+            pickle.dump(model.error_rate, fp)
+        
     return batch_results
 
 
