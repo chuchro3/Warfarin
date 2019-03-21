@@ -22,7 +22,7 @@ IGNORE_LABELS = [
 DISEASE_LABEL = 'Comorbidities'
 
 # switch to True if want to 
-INCLUDE_DISEASES = False
+INCLUDE_DISEASES = True
 
 # DO NOT ACCESS NUM_COLS BEFORE CALLING get_data_linear
 NUM_COLS = 0
@@ -41,7 +41,7 @@ def get_data_linear():
     disease_dict = {}
     key_to_disease_string = {}
     for k in values_dict[DISEASE_LABEL]:
-        diseases = map(str.strip, k.split(';'))
+        diseases = map(str.lower, map(str.strip, k.split(';')))
         key_to_disease_string[values_dict[DISEASE_LABEL][k]] = k
         for d in diseases:
             if d not in disease_dict:
@@ -79,7 +79,7 @@ def get_data_linear():
                 linearized_data[i,write_index] = val
                 write_index += 1
             elif INCLUDE_DISEASES and index_labels[j] == DISEASE_LABEL:
-                diseases = map(str.strip, key_to_disease_string[val].split(';'))
+                diseases = map(str.lower, map(str.strip, key_to_disease_string[val].split(';')))
                 for dis in diseases:
                     linearized_data[i, write_index + disease_dict[dis]] = 1
                 write_index += len(disease_dict)
