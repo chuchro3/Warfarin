@@ -6,10 +6,15 @@ class Baseline(object):
     def __init__(self, columns_dict=None, values_dict=None):
         self.columns_dict = columns_dict
         self.values_dict = values_dict
-
+        self.regret = []
+        self.error_rate = []
 
     def train(self, data, labels):
-        pass 
+        for i in range(len(data)):
+            pred = self.evaluate_datum(data[i])
+            prev = 0 if len(self.regret) == 0 else self.regret[-1]
+            self.regret.append(prev + (0 if pred == labels[i] else 1))
+            self.error_rate.append(self.regret[-1] / len(self.regret))
 
     def evaluate(self, data):
         """
@@ -28,7 +33,11 @@ class Baseline(object):
         """
         pass
 
+    def get_regret(self):
+        return self.regret
 
+    def get_error_rate(self):
+        return self.error_rate
     
 class Fixed_Dose(Baseline):
 
@@ -36,13 +45,13 @@ class Fixed_Dose(Baseline):
         return "Fixed"
 
     def evaluate_datum(self, datum):
-        return 35 
+        return util.bucket(35)
 
 # Weights can be found in 'data/appx.pdf' section 1f
 class Warfarin_Clinical_Dose(Baseline):
 
     def __str__(self):
-        return "Warfarin Clinical Dose"
+        return "WarfarinClinicalDose"
 
     def _get_enzyme_inducer_status(self, datum):
         status = False
@@ -64,14 +73,14 @@ class Warfarin_Clinical_Dose(Baseline):
         dose += 1.2799 * self._get_enzyme_inducer_status(datum)
         dose -= 0.5695 * (datum[self.columns_dict['Amiodarone (Cordarone)']] == self.values_dict['Amiodarone (Cordarone)']['1'])
         # dose calculated in appx.pdf states that it's the sqrt of weekly
-        return dose ** 2
+        return util.bucket(dose ** 2)
 
 
 # Weights can be found in 'data/appx.pdf' section 1f
 class Warfarin_Pharmacogenetic_Dose(Baseline):
 
     def __str__(self):
-        return "Warfarin Pharmacogenetic Dose"
+        return "WarfarinPharmacogeneticDose"
 
     def _get_enzyme_inducer_status(self, datum):
         status = False
@@ -107,7 +116,7 @@ class Warfarin_Pharmacogenetic_Dose(Baseline):
         #Enzyme inducer status
         dose -= 0.5503 * datum[self.columns_dict['Amiodarone (Cordarone)']]
         # dose calculated in appx.pdf states that it's the sqrt of weekly
-        return dose ** 2
+        return util.bucket(dose ** 2)
 
 
 
