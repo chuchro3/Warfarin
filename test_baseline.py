@@ -20,7 +20,7 @@ def test_dummy_baseline(alg):
     print("accuracy on dummy data with " + str(alg) + ": " + str(acc))
 
 def test_data_baseline(alg, data, true_labels):
-
+    print()
     alg.train(data, true_labels)
     
     labels = list(map(util.bucket, alg.evaluate(data)))
