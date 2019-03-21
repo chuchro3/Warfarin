@@ -11,12 +11,12 @@ import datetime
 FORCED_SAMPLES = 50
 FEATURE_DIM = ldl.NUM_COLS
 NUM_ACTIONS = 3
-LAMBDA = 0.1
+LAMBDA = 0.05
 
 UPDATE_EVERY_X_ITERS = 1
 
-
-UPDATE_ALL_ARMS = True
+#UPDATE_ALL_ARMS = True
+UPDATE_ALL_ARMS = False
 
 
 class LASSO_BANDIT():
@@ -57,7 +57,7 @@ class LASSO_BANDIT():
 
 
     def __str__(self):
-        return "LASSO Bandit"
+        return "LASSO_Bandit_nodis"
     
     def train(self, data, labels):
         for i in tqdm(range(len(labels))):
@@ -110,9 +110,9 @@ class LASSO_BANDIT():
                                    self.lambda_t)
 
         # metrics collection
-        self.cumu_regret += (0 if action_t == l else -1)
+        self.cumu_regret += (0 if action_t == l else 0-(-1))
         self.regret.append(self.cumu_regret)
-        self.error_rate.append(-self.cumu_regret/self.timestep_t)
+        self.error_rate.append(self.cumu_regret/self.timestep_t)
 
         return action_t
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     true_buckets = [util.bucket(t) for t in true_labels]
     
     lasso_bandit = LASSO_BANDIT()
-    lasso_bandit.train(data[:2000], true_buckets[:2000])
+    lasso_bandit.train(data, true_buckets)
     pred_buckets = lasso_bandit.evaluate(data)
     acc = util.get_accuracy_bucketed(pred_buckets, true_buckets)
     print("accuracy on LASSO bandit: " + str(acc))
